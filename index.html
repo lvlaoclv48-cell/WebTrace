@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebTrace - OSINT Разведка</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: 
+                linear-gradient(135deg, 
+                    #0a1929 0%,
+                    #0f2b3d 20%,
+                    #143b52 40%,
+                    #1a5c7a 60%,
+                    #1e7a5c 80%,
+                    #1a5c45 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            background-size: 400% 400%;
+            animation: aurora 20s ease infinite;
+        }
+        
+        @keyframes aurora {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 50% 75%; }
+            50% { background-position: 100% 50%; }
+            75% { background-position: 50% 25%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .snowflakes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .snowflake {
+            position: absolute;
+            color: rgba(120, 220, 220, 0.4);
+            font-size: 16px;
+            opacity: 0.5;
+            animation: float 25s infinite linear;
+            text-shadow: 0 0 8px rgba(80, 200, 200, 0.3);
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 0.5;
+            }
+            25% {
+                transform: translate(12px, 30px) rotate(90deg);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translate(-8px, 60px) rotate(180deg);
+                opacity: 0.5;
+            }
+            75% {
+                transform: translate(15px, 90px) rotate(270deg);
+                opacity: 0.2;
+            }
+            100% {
+                transform: translate(0, 120px) rotate(360deg);
+                opacity: 0.5;
+            }
+        }
+        
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .main-title {
+            font-size: 4.5rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 4px 20px rgba(80, 200, 200, 0.5);
+            margin-bottom: 3rem;
+            transform: translateY(-100px);
+            opacity: 0;
+            animation: slideDown 1s ease-out 0.5s forwards;
+            background: linear-gradient(135deg, #4fd1c7, #38b2ac, #2c7a7b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        @keyframes slideDown {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .tab {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            background: transparent;
+            color: #cbd5e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .tab.active {
+            background: rgba(79, 209, 199, 0.2);
+            color: #6ee7b7;
+            box-shadow: 0 4px 15px rgba(79, 209, 199, 0.3);
+        }
+        
+        .tab:hover {
+            background: rgba(79, 209, 199, 0.1);
+            color: #a7f3d0;
+        }
+        
+        .tab-content {
+            display: none;
+            width: 100%;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .cards-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            position: relative;
+        }
+        
+        .card-link {
+            text-decoration: none;
+            display: block;
+            color: inherit;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(25px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(-100px) scale(0.9);
+            opacity: 0;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .card:hover::before {
+            left: 100%;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(64, 180, 180, 0.4);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(64, 180, 180, 0.3);
+        }
+        
+        .card-1 {
+            animation: cardSlideDown 0.8s ease-out 1s forwards;
+        }
+        
+        .card-2 {
+            animation: cardSlideDown 0.8s ease-out 1.2s forwards;
+        }
+        
+        .card-3 {
+            animation: cardSlideDown 0.8s ease-out 1.4s forwards;
+        }
+        
+        @keyframes cardSlideDown {
+            0% {
+                transform: translateY(-100px) scale(0.9);
+                opacity: 0;
+            }
+            70% {
+                transform: translateY(10px) scale(1.02);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #a7f3d0;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s ease;
+        }
+        
+        .card:hover .card-title {
+            color: #6ee7b7;
+            text-shadow: 0 0 10px rgba(110, 231, 183, 0.3);
+        }
+        
+        .card-title::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            background: #4fd1c7;
+            border-radius: 50%;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover .card-title::before {
+            background: #6ee7b7;
+            box-shadow: 0 0 8px rgba(110, 231, 183, 0.5);
+            transform: scale(1.2);
+        }
+        
+        .card-text {
+            color: #cbd5e0;
+            line-height: 1.6;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+        
+        .card:hover .card-text {
+            color: #e2e8f0;
+        }
+        
+        .card:nth-child(2) .card-title::before {
+            background: #38b2ac;
+        }
+        
+        .card:nth-child(3) .card-title::before {
+            background: #2c7a7b;
+        }
+        
+        .search-form {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(25px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #4fd1c7;
+            box-shadow: 0 0 0 2px rgba(79, 209, 199, 0.3);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .search-input::placeholder {
+            color: #a0aec0;
+        }
+        
+        .search-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #4fd1c7, #38b2ac);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 209, 199, 0.4);
+        }
+        
+        .search-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .results {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(25px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-height: 200px;
+            display: none;
+        }
+        
+        .results.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #a7f3d0;
+            font-size: 1.1rem;
+        }
+        
+        .result-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #4fd1c7;
+            transition: all 0.3s ease;
+        }
+        
+        .result-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(5px);
+        }
+        
+        .result-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .result-title {
+            color: #6ee7b7;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .info-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .info-label {
+            color: #90cdf4;
+            font-size: 0.85rem;
+            margin-bottom: 0.3rem;
+            font-weight: 500;
+        }
+        
+        .info-value {
+            color: #e2e8f0;
+            font-size: 1rem;
+            font-weight: 600;
+            word-break: break-word;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: rgba(79, 209, 199, 0.2);
+            color: #6ee7b7;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .source-badge {
+            background: rgba(110, 231, 183, 0.2);
+            color: #a7f3d0;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-value {
+            color: #6ee7b7;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .stat-label {
+            color: #a0aec0;
+            font-size: 0.8rem;
+        }
+        
+        .error {
+            color: #fc8181;
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 3rem;
+                text-align: center;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            .card-title {
+                font-size: 1.3rem;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+        
+        .glow {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: 1;
+            opacity: 0.3;
+        }
+        
+        .glow-1 {
+            top: 10%;
+            left: 10%;
+            background: radial-gradient(circle, rgba(31, 128, 128, 0.4) 0%, transparent 70%);
+            animation: glowMove 15s infinite alternate ease-in-out;
+        }
+        
+        .glow-2 {
+            bottom: 10%;
+            right: 10%;
+            background: radial-gradient(circle, rgba(45, 122, 123, 0.3) 0%, transparent 70%);
+            animation: glowMove 18s infinite alternate-reverse ease-in-out;
+        }
+        
+        .glow-3 {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(79, 209, 199, 0.2) 0%, transparent 70%);
+            animation: glowPulse 12s infinite ease-in-out;
+        }
+        
+        @keyframes glowMove {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(80px, -60px) scale(1.4); }
+            100% { transform: translate(40px, -30px) scale(1.2); }
+        }
+        
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.2; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.4; transform: translate(-50%, -50%) scale(1.3); }
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(100, 230, 200, 0.4);
+            border-radius: 50%;
+            animation: particleFloat 30s infinite linear;
+            box-shadow: 0 0 6px rgba(100, 230, 200, 0.3);
+        }
+        
+        @keyframes particleFloat {
+            0% {
+                transform: translate(0, 0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translate(150px, -150px);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="snowflakes" id="snowflakes"></div>
+    <div class="particles" id="particles"></div>
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+    <div class="glow glow-3"></div>
+    
+    <div class="container">
+        <h1 class="main-title">WEBTRACE</h1>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="info">Информация</button>
+            <button class="tab" data-tab="search">Поиск по номеру</button>
+        </div>
+        
+        <div class="tab-content active" id="info-tab">
+            <div class="cards-container">
+                <a href="https://t.me/WebTraceSearchBot" target="_blank" class="card-link">
+                    <div class="card card-1">
+                        <h2 class="card-title">@WebTraceSearchBot</h2>
+                        <p class="card-text">Лучший инструмент для OSINT разведки, имеются куча доступных ключей и команд. Быстрый поиск по 50+ социальным сетям и платформам.</p>
+                    </div>
+                </a>
+                
+                <a href="https://t.me/WebTraceChannel" target="_blank" class="card-link">
+                    <div class="card card-2">
+                        <h2 class="card-title">@WebTraceChannel</h2>
+                        <p class="card-text">Телеграм канал где выпускаются обновления на бота. Новые функции, улучшения и эксклюзивные возможности первыми!</p>
+                    </div>
+                </a>
+                
+                <a href="https://t.me/WebTraceSupport" target="_blank" class="card-link">
+                    <div class="card card-3">
+                        <h2 class="card-title">@WebTraceSupport</h2>
+                        <p class="card-text">Поддержка которая ответит всегда. Помощь в настройке, ответы на вопросы и решение проблем 24/7.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="search-tab">
+            <div class="search-form">
+                <input type="text" class="search-input" placeholder="Введите номер телефона (например: 79991234567)" id="phoneInput">
+                <button class="search-btn" id="searchBtn">Найти информацию</button>
+            </div>
+            
+            <div class="results" id="results"></div>
+        </div>
+    </div>
+
+    <script>
+        // Конфигурация API
+        const API_CONFIG = {
+            baseUrl: 'https://api.depsearch.digital',
+            token: 'nxTNNkMjH3PPv4bmven11vN2ZjFu8xVs'
+        };
+
+        // Создание снежинок и частиц
+        function createSnowflakes() {
+            const snowflakesContainer = document.getElementById('snowflakes');
+            const snowflakeCount = 30;
+            
+            for (let i = 0; i < snowflakeCount; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+                snowflake.innerHTML = '❄';
+                
+                const size = Math.random() * 10 + 6;
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const animationDuration = Math.random() * 20 + 20;
+                const animationDelay = Math.random() * 10;
+                
+                snowflake.style.left = left + 'vw';
+                snowflake.style.top = top + 'vh';
+                snowflake.style.fontSize = size + 'px';
+                snowflake.style.animationDuration = animationDuration + 's';
+                snowflake.style.animationDelay = animationDelay + 's';
+                
+                snowflakesContainer.appendChild(snowflake);
+            }
+        }
+        
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const size = Math.random() * 1.5 + 1;
+                const duration = Math.random() * 30 + 20;
+                const delay = Math.random() * 15;
+                
+                particle.style.left = left + 'vw';
+                particle.style.top = top + 'vh';
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.animationDuration = duration + 's';
+                particle.style.animationDelay = delay + 's';
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Управление вкладками
+        function initTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.getAttribute('data-tab');
+                    
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(tc => tc.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    document.getElementById(`${tabName}-tab`).classList.add('active');
+                });
+            });
+        }
+        
+        // Реальная интеграция с API
+        function initSearch() {
+            const searchBtn = document.getElementById('searchBtn');
+            const phoneInput = document.getElementById('phoneInput');
+            const results = document.getElementById('results');
+            
+            searchBtn.addEventListener('click', async () => {
+                const phoneNumber = phoneInput.value.trim();
+                
+                if (!phoneNumber) {
+                    showError('Введите номер телефона');
+                    return;
+                }
+                
+                if (!/^\d{11}$/.test(phoneNumber)) {
+                    showError('Введите корректный номер (11 цифр, например: 79991234567)');
+                    return;
+                }
+                
+                showLoading();
+                
+                try {
+                    // Выполняем реальный API запрос
+                    const apiResponse = await makeApiRequest(phoneNumber);
+                    showResults(apiResponse);
+                    
+                } catch (error) {
+                    showError('Ошибка при поиске: ' + error.message);
+                }
+            });
+        }
+        
+        // Реальный API запрос БЕЗ кавычек
+        async function makeApiRequest(phoneNumber) {
+            const apiUrl = `${API_CONFIG.baseUrl}/quest=${phoneNumber}?token=${API_CONFIG.token}`;
+            
+            console.log('Выполняем API запрос:', apiUrl);
+            
+            const response = await fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            return data;
+        }
+        
+        function showLoading() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="loading">🔍 Выполняем поиск через API...</div>';
+            results.classList.add('active');
+            
+            const searchBtn = document.getElementById('searchBtn');
+            searchBtn.disabled = true;
+            searchBtn.textContent = 'Поиск...';
+        }
+        
+        function showResults(data) {
+            const results = document.getElementById('results');
+            const searchBtn = document.getElementById('searchBtn');
+            
+            searchBtn.disabled = false;
+            searchBtn.textContent = 'Найти информацию';
+            
+            if (!data) {
+                results.innerHTML = '<div class="error">Не удалось получить данные от API</div>';
+                return;
+            }
+            
+            // Форматируем ответ API в красивый вид
+            let html = formatApiData(data);
+            results.innerHTML = html;
+        }
+
+        // Красивое форматирование данных из API
+        function formatApiData(data) {
+            if (!data.results || data.results.length === 0) {
+                return '<div class="error">Информация по данному номеру не найдена</div>';
+            }
+            
+            let html = '';
+            
+            // Статистика поиска
+            html += `
+                <div class="result-item">
+                    <div class="result-title">📊 Статистика поиска</div>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-value">${data.results.length}</div>
+                            <div class="stat-label">найдено записей</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${data.search_time_seconds || '0.00'}s</div>
+                            <div class="stat-label">время поиска</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${getLatestYear(data.results)}</div>
+                            <div class="stat-label">актуальность данных</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Группируем данные по источникам для лучшего отображения
+            const groupedResults = groupResultsBySource(data.results);
+            
+            // Обрабатываем каждую группу данных
+            Object.keys(groupedResults).forEach(source => {
+                const results = groupedResults[source];
+                html += formatResultsGroup(source, results);
+            });
+            
+            return html;
+        }
+
+        // Группировка результатов по источникам данных
+        function groupResultsBySource(results) {
+            const groups = {};
+            
+            results.forEach(result => {
+                const source = result.data || 'Неизвестный источник';
+                if (!groups[source]) {
+                    groups[source] = [];
+                }
+                groups[source].push(result);
+            });
+            
+            return groups;
+        }
+
+        // Форматирование группы результатов
+        function formatResultsGroup(source, results) {
+            let html = '';
+            const sourceName = getSourceName(source);
+            
+            html += `
+                <div class="result-item">
+                    <div class="result-title">
+                        ${getSourceIcon(source)} ${sourceName}
+                        <span class="badge source-badge">${results.length} записей</span>
+                    </div>
+                    <div class="result-grid">
+            `;
+            
+            // Обрабатываем первую запись как основную
+            const mainResult = results[0];
+            html += formatMainInfo(mainResult);
+            
+            // Дополнительные записи из этого же источника
+            if (results.length > 1) {
+                html += `
+                    <div class="info-card" style="grid-column: 1 / -1;">
+                        <div class="info-label">📋 Дополнительные записи</div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                `;
+                results.slice(1).forEach((result, index) => {
+                    html += `<span class="badge">Запись ${index + 2}</span>`;
+                });
+                html += `</div></div>`;
+            }
+            
+            html += `</div></div>`;
+            
+            return html;
+        }
+
+        // Форматирование основной информации
+        function formatMainInfo(result) {
+            let html = '';
+            
+            // ФИО и личные данные
+            const fio = result.fio || result.full_name || result.fullname || result.name || result.pib;
+            if (fio && fio !== 'null' && fio !== '1') {
+                html += `
+                    <div class="info-card">
+                        <div class="info-label">👤 ФИО</div>
+                        <div class="info-value">${fio}</div>
+                    </div>
+                `;
+            }
+            
+            // Телефон
+            if (result.phone) {
+                html += `
+                    <div class="info-card">
+                        <div class="info-label">📞 Телефон</div>
+                        <div class="info-value">${formatPhone(result.phone)}</div>
+                    </div>
+                `;
+            }
+            
+            // Дополнительные телефоны
+            const additionalPhones = [];
+            for (let i = 1; i <= 5; i++) {
+                const phoneKey = `phone${i}`;
+                if (result[phoneKey] && result[phoneKey] !== result.phone) {
+                    additionalPhones.push(result[phoneKey]);
+                }
+            }
+            if (additionalPhones.length > 0) {
+                html += `
+                    <div class="info-card">
+                        <div class="info-label">📱 Доп. телефоны</div>
+                        <div class="info-value">${additionalPhones.map(p => formatPhone(p)).join('<br>')}</div>
+                    </div>
+                `;
+            }
+            
+            // Email
+            if (result.email && result.email !== 'null') {
+                html += `
+                    <div class="info-card">
+                        <div class="info-label">📧 Email</div>
+                        <div class="info-value">${result.email}</div>
+                    </div>
+                `;
+            }
+            
+            // Дата рождения
+            const birthDate = result.birthdate || result.birth_date || result.bdate || result.birthday;
+            if (birthDate && birthDate !== 'null') {
+                html += `
+                    <div class="info-card">
+                        <div class="info-label">🎂 Дата рождения</div>
+                        <div class="info-value">${formatDate(birthDate)}</div>
+                    </div>
+                `;
+            }
+            
+            // Паспортные данные
+            if (result.passport_info || (result.passport_series && result.passport_number)) {
+                const passportInfo = result.passport_info || 
+                    `Серия ${result.passport_series} № ${result.passport_number}`;
+                html += `
+                    <div class="info-card">
+                        <div class="info-label">🆔 Паспорт</div>
+                        <div class="info-value">${passportInfo}</div>
+                    </div>
+                `;
+            }
+            
+            // Дата выдачи паспорта
+            if (result.passport_date && result.passport_date !== 'null') {
+                html += `
+                    <div class="info-card">
+                        <div class="info-label">📅 Выдан</div>
+                        <div class="info-value">${formatDate(result.passport_date)}</div>
+                    </div>
+                `;
+            }
+            
+            // ИНН
+            if (result.inn || result.INN) {
+                html += `
+                    <div class="info-card">
+                        <div class="info-label">💳 ИНН</div>
+                        <div class="info-value">${result.inn || result.INN}</div>
+                    </div>
+                `;
+            }
+            
+            // СНИЛС
+            if (result.snils || result.snils_2) {
+                const snils = result.snils || result.snils_2;
+                if (snils !== 'null') {
+                    html += `
+                        <div class="info-card">
+                            <div class="info-label">📄 СНИЛС</div>
+                            <div class="info-value">${snils}</div>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Адрес регистрации
+            const regAddress = result.address_reg || result.registred_address || 
+                              result.address || result.registred_city;
+            if (regAddress && regAddress !== 'null') {
+                html += `
+                    <div class="info-card">
+                        <div class="info-label">🏠 Адрес регистрации</div>
+                        <div class="info-value">${formatAddress(regAddress, result)}</div>
+                    </div>
+                `;
+            }
+            
+            // Адрес проживания
+            const actualAddress = result.address_actual || result.actual_address || 
+                                 result.actual_city;
+            if (actualAddress && actualAddress !== 'null' && actualAddress !== regAddress) {
+                html += `
+                    <div class="info-card">
+                        <div class="info-label">📍 Адрес проживания</div>
+                        <div class="info-value">${formatAddress(actualAddress, result)}</div>
+                    </div>
+                `;
+            }
+            
+            // Место работы
+            if (result.work_place && result.work_place !== 'null') {
+                html += `
+                    <div class="info-card">
+                        <div class="info-label">💼 Место работы</div>
+                        <div class="info-value">${result.work_place}</div>
+                    </div>
+                `;
+            }
+            
+            // Финансовая информация
+            if (result.sum || result.family_income) {
+                const income = result.sum || result.family_income;
+                html += `
+                    <div class="info-card">
+                        <div class="info-label">💰 Доход</div>
+                        <div class="info-value">${formatCurrency(income)} руб.</div>
+                    </div>
+                `;
+            }
+            
+            // Номер карты
+            if (result.card_number) {
+                html += `
+                    <div class="info-card">
+                        <div class="info-label">💳 Номер карты</div>
+                        <div class="info-value">${result.card_number}</div>
+                    </div>
+                `;
+            }
+            
+            // Социальные сети и теги
+            if (result.tags && result.tags !== 'null') {
+                html += `
+                    <div class="info-card">
+                        <div class="info-label">🏷️ Теги</div>
+                        <div class="info-value">${result.tags}</div>
+                    </div>
+                `;
+            }
+            
+            // Статус
+            if (result.status && result.status !== 'null' && result.status !== 'ready') {
+                html += `
+                    <div class="info-card">
+                        <div class="info-label">🟢 Статус</div>
+                        <div class="info-value">${result.status}</div>
+                    </div>
+                `;
+            }
+            
+            // Дата регистрации
+            if (result.reg_date || result.record_date || result.created_at) {
+                const regDate = result.reg_date || result.record_date || result.created_at;
+                html += `
+                    <div class="info-card">
+                        <div class="info-label">📅 Дата регистрации</div>
+                        <div class="info-value">${formatDate(regDate)}</div>
+                    </div>
+                `;
+            }
+            
+            // Последняя активность
+            if (result.last_online || result.last_update || result.updated_at) {
+                const lastOnline = result.last_online || result.last_update || result.updated_at;
+                html += `
+                    <div class="info-card">
+                        <div class="info-label">🕒 Последняя активность</div>
+                        <div class="info-value">${formatDate(lastOnline)}</div>
+                    </div>
+                `;
+            }
+            
+            // ID пользователя
+            if (result.user_id || result.system_id || result.fcid) {
+                const userId = result.user_id || result.system_id || result.fcid;
+                html += `
+                    <div class="info-card">
+                        <div class="info-label">🆔 ID пользователя</div>
+                        <div class="info-value">${userId}</div>
+                    </div>
+                `;
+            }
+            
+            return html;
+        }
+
+        // Вспомогательные функции форматирования
+        function formatPhone(phone) {
+            const cleanPhone = phone.replace(/\D/g, '');
+            if (cleanPhone.length === 11) {
+                return cleanPhone.replace(/(\d{1})(\d{3})(\d{3})(\d{2})(\d{2})/, '+$1 ($2) $3-$4-$5');
+            }
+            return phone;
+        }
+
+        function formatDate(dateString) {
+            try {
+                // Убираем префикс b' для Python bytes
+                const cleanDateString = dateString.replace(/^b'|'$/g, '');
+                const date = new Date(cleanDateString);
+                if (isNaN(date.getTime())) {
+                    // Пробуем парсить даты в формате DD.MM.YYYY
+                    const parts = cleanDateString.split('.');
+                    if (parts.length === 3) {
+                        const day = parseInt(parts[0]);
+                        const month = parseInt(parts[1]) - 1;
+                        const year = parseInt(parts[2]);
+                        const parsedDate = new Date(year, month, day);
+                        if (!isNaN(parsedDate.getTime())) {
+                            return parsedDate.toLocaleDateString('ru-RU', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            });
+                        }
+                    }
+                    return cleanDateString;
+                }
+                return date.toLocaleDateString('ru-RU', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            } catch (e) {
+                return dateString;
+            }
+        }
+
+        function formatAddress(address, result) {
+            let fullAddress = address;
+            
+            // Собираем полный адрес из компонентов
+            if (result.registred_city && result.registred_street && result.registred_house) {
+                fullAddress = `${result.registred_city}, ${result.registred_street}, д. ${result.registred_house}`;
+                if (result.registred_flat) {
+                    fullAddress += `, кв. ${result.registred_flat}`;
+                }
+            }
+            
+            return fullAddress.replace(/^b'|'$/g, '');
+        }
+
+        function formatCurrency(amount) {
+            return parseInt(amount).toLocaleString('ru-RU');
+        }
+
+        function getSourceName(source) {
+            const sourceNames = {
+                'numbuster_2018_2019': 'Numbuster 2018-2019',
+                'getcontact_2021': 'GetContact 2021',
+                'dengisrazy_ru2024': 'ДеньгиСразу 2024',
+                'dns_shop2022': 'DNS Shop 2022',
+                'himera_2023': 'Химера 2023',
+                'oneclickmoney_ru_2024': 'OneClickMoney 2024',
+                'qzaem': 'Qzaem',
+                'russian_tax_2022': 'Налоговая РФ 2022',
+                'whatsapp_russia': 'WhatsApp Россия',
+                'facebook_russia': 'Facebook Россия',
+                'nalogrf2023': 'Налог РФ 2023',
+                'zaymer_ru': 'Zaymer.ru'
+            };
+            return sourceNames[source] || source;
+        }
+
+        function getSourceIcon(source) {
+            const sourceIcons = {
+                'numbuster_2018_2019': '📱',
+                'getcontact_2021': '👥',
+                'dengisrazy_ru2024': '💰',
+                'dns_shop2022': '🛒',
+                'himera_2023': '🔍',
+                'oneclickmoney_ru_2024': '💸',
+                'qzaem': '🏦',
+                'russian_tax_2022': '🏛️',
+                'whatsapp_russia': '💬',
+                'facebook_russia': '📘',
+                'nalogrf2023': '📊',
+                'zaymer_ru': '💳'
+            };
+            return sourceIcons[source] || '📄';
+        }
+
+        function getLatestYear(results) {
+            const years = results.map(result => {
+                const dateStr = result.reg_date || result.record_date || result.created_at;
+                if (dateStr) {
+                    const year = new Date(dateStr).getFullYear();
+                    return isNaN(year) ? null : year;
+                }
+                return null;
+            }).filter(year => year !== null);
+            
+            return years.length > 0 ? Math.max(...years) : new Date().getFullYear();
+        }
+        
+        function showError(message) {
+            const results = document.getElementById('results');
+            results.innerHTML = `<div class="error">${message}</div>`;
+            results.classList.add('active');
+            
+            const searchBtn = document.getElementById('searchBtn');
+            searchBtn.disabled = false;
+            searchBtn.textContent = 'Найти информацию';
+        }
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            createSnowflakes();
+            createParticles();
+            initTabs();
+            initSearch();
+        });
+    </script>
+</body>
+</html>
