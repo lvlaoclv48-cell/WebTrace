@@ -633,132 +633,132 @@
     </div>
 
     <script>
-        // Обфусцированная конфигурация API
-        const _0x1a2b = [
-            'baseUrl',
-            'https://api.depsearch.digital',
-            'token'
-        ];
-        
+        // Защищенная конфигурация API
         const API_CONFIG = {
-            [_0x1a2b[0]]: _0x1a2b[1],
-            [_0x1a2b[2]]: (function() {
-                // Динамическая сборка токена
-                const _0x2f8a = [
-                    0x51, 0x47, 0x54, 0x68, 0x59, 0x49, 0x6c, 0x32, 0x79, 0x79, 
-                    0x47, 0x32, 0x57, 0x34, 0x34, 0x51, 0x6a, 0x65, 0x4d, 0x34, 
-                    0x36, 0x7a, 0x79, 0x78, 0x38, 0x6d, 0x58, 0x64, 0x67, 0x71, 
-                    0x66, 0x46
+            baseUrl: 'https://api.depsearch.digital',
+            getToken: function() {
+                // Токен разбит на части и собирается динамически
+                const parts = [
+                    [0x51, 0x47, 0x54, 0x68, 0x59, 0x49],
+                    [0x6c, 0x32, 0x79, 0x79, 0x47, 0x32],
+                    [0x57, 0x34, 0x34, 0x51, 0x6a, 0x65],
+                    [0x4d, 0x34, 0x36, 0x7a, 0x79, 0x78],
+                    [0x38, 0x6d, 0x58, 0x64, 0x67, 0x71],
+                    [0x66, 0x46]
                 ];
-                return _0x2f8a.map(_0x3c => String.fromCharCode(_0x3c)).join('');
-            })()
+                return parts.map(part => 
+                    part.map(code => String.fromCharCode(code)).join('')
+                ).join('');
+            }
         };
 
-        // Создание снежинок и частиц
-        function _0x4a7d() {
-            const _0x5e21 = document.getElementById('snowflakes');
-            const _0x3f8a = 30;
+        // Создание снежинок
+        function createSnowflakes() {
+            const container = document.getElementById('snowflakes');
+            const count = 30;
             
-            for (let _0x2c9d = 0; _0x2c9d < _0x3f8a; _0x2c9d++) {
-                const _0x1b6f = document.createElement('div');
-                _0x1b6f.className = 'snowflake';
-                _0x1b6f.innerHTML = '❄';
+            for (let i = 0; i < count; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+                snowflake.innerHTML = '❄';
                 
-                const _0x4e21 = Math.random() * 10 + 6;
-                const _0x2d8a = Math.random() * 100;
-                const _0x1f3c = Math.random() * 100;
-                const _0x3e21 = Math.random() * 20 + 20;
-                const _0x4d8a = Math.random() * 10;
+                const size = Math.random() * 10 + 6;
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const duration = Math.random() * 20 + 20;
+                const delay = Math.random() * 10;
                 
-                _0x1b6f.style.left = _0x2d8a + 'vw';
-                _0x1b6f.style.top = _0x1f3c + 'vh';
-                _0x1b6f.style.fontSize = _0x4e21 + 'px';
-                _0x1b6f.style.animationDuration = _0x3e21 + 's';
-                _0x1b6f.style.animationDelay = _0x4d8a + 's';
+                snowflake.style.left = left + 'vw';
+                snowflake.style.top = top + 'vh';
+                snowflake.style.fontSize = size + 'px';
+                snowflake.style.animationDuration = duration + 's';
+                snowflake.style.animationDelay = delay + 's';
                 
-                _0x5e21.appendChild(_0x1b6f);
+                container.appendChild(snowflake);
             }
         }
         
-        function _0x3b8d() {
-            const _0x2e21 = document.getElementById('particles');
-            const _0x1f8a = 20;
+        // Создание частиц
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const count = 20;
             
-            for (let _0x3c9d = 0; _0x3c9d < _0x1f8a; _0x3c9d++) {
-                const _0x4b6f = document.createElement('div');
-                _0x4b6f.className = 'particle';
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
                 
-                const _0x5e21 = Math.random() * 100;
-                const _0x3f3c = Math.random() * 100;
-                const _0x2e21 = Math.random() * 1.5 + 1;
-                const _0x1e21 = Math.random() * 30 + 20;
-                const _0x5d8a = Math.random() * 15;
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const size = Math.random() * 1.5 + 1;
+                const duration = Math.random() * 30 + 20;
+                const delay = Math.random() * 15;
                 
-                _0x4b6f.style.left = _0x5e21 + 'vw';
-                _0x4b6f.style.top = _0x3f3c + 'vh';
-                _0x4b6f.style.width = _0x2e21 + 'px';
-                _0x4b6f.style.height = _0x2e21 + 'px';
-                _0x4b6f.style.animationDuration = _0x1e21 + 's';
-                _0x4b6f.style.animationDelay = _0x5d8a + 's';
+                particle.style.left = left + 'vw';
+                particle.style.top = top + 'vh';
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.animationDuration = duration + 's';
+                particle.style.animationDelay = delay + 's';
                 
-                _0x2e21.appendChild(_0x4b6f);
+                container.appendChild(particle);
             }
         }
         
         // Управление вкладками
-        function _0x2a7d() {
-            const _0x3e21 = document.querySelectorAll('.tab');
-            const _0x4d8a = document.querySelectorAll('.tab-content');
+        function initTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
             
-            _0x3e21.forEach(_0x5e21 => {
-                _0x5e21.addEventListener('click', () => {
-                    const _0x3f3c = _0x5e21.getAttribute('data-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.getAttribute('data-tab');
                     
-                    _0x3e21.forEach(_0x2e21 => _0x2e21.classList.remove('active'));
-                    _0x4d8a.forEach(_0x1e21 => _0x1e21.classList.remove('active'));
+                    // Убираем активный класс у всех вкладок и контента
+                    tabs.forEach(t => t.classList.remove('active'));
+                    contents.forEach(c => c.classList.remove('active'));
                     
-                    _0x5e21.classList.add('active');
-                    document.getElementById(`${_0x3f3c}-tab`).classList.add('active');
+                    // Добавляем активный класс текущей вкладке и контенту
+                    tab.classList.add('active');
+                    document.getElementById(`${tabName}-tab`).classList.add('active');
                 });
             });
         }
         
-        // Реальная интеграция с API
-        function _0x1b8d() {
-            const _0x4e21 = document.getElementById('searchBtn');
-            const _0x2d8a = document.getElementById('phoneInput');
-            const _0x1f3c = document.getElementById('results');
+        // Инициализация поиска
+        function initSearch() {
+            const searchBtn = document.getElementById('searchBtn');
+            const phoneInput = document.getElementById('phoneInput');
             
-            _0x4e21.addEventListener('click', async () => {
-                const _0x3e21 = _0x2d8a.value.trim();
+            searchBtn.addEventListener('click', async () => {
+                const phone = phoneInput.value.trim();
                 
-                if (!_0x3e21) {
-                    _0x5d21('Введите номер телефона');
+                if (!phone) {
+                    showError('Введите номер телефона');
                     return;
                 }
                 
-                if (!/^\d{11}$/.test(_0x3e21)) {
-                    _0x5d21('Введите корректный номер (11 цифр, например: 79991234567)');
+                if (!/^\d{11}$/.test(phone)) {
+                    showError('Введите корректный номер (11 цифр, например: 79991234567)');
                     return;
                 }
                 
-                _0x4d21();
+                showLoading();
                 
                 try {
-                    const _0x2e21 = await _0x3d21(_0x3e21);
-                    _0x1e21(_0x2e21);
-                    
-                } catch (_0x5e21) {
-                    _0x5d21('Ошибка при поиске: ' + _0x5e21.message);
+                    const response = await makeApiRequest(phone);
+                    displayResults(response);
+                } catch (error) {
+                    showError('Ошибка при поиске: ' + error.message);
                 }
             });
         }
         
-        // Реальный API запрос
-        async function _0x3d21(_0x4e21) {
-            const _0x2d8a = `${API_CONFIG.baseUrl}/quest=${_0x4e21}?token=${API_CONFIG.token}`;
+        // API запрос
+        async function makeApiRequest(phone) {
+            const token = API_CONFIG.getToken();
+            const url = `${API_CONFIG.baseUrl}/quest=${phone}?token=${token}`;
             
-            const _0x1f3c = await fetch(_0x2d8a, {
+            const response = await fetch(url, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
@@ -766,452 +766,171 @@
                 }
             });
             
-            if (!_0x1f3c.ok) {
-                throw new Error(`HTTP error! status: ${_0x1f3c.status}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
             
-            const _0x3e21 = await _0x1f3c.json();
-            return _0x3e21;
+            return await response.json();
         }
         
-        function _0x4d21() {
-            const _0x2e21 = document.getElementById('results');
-            _0x2e21.innerHTML = '<div class="loading">🔍 Выполняем поиск через API...</div>';
-            _0x2e21.classList.add('active');
+        // Показать загрузку
+        function showLoading() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="loading">🔍 Выполняем поиск через API...</div>';
+            results.classList.add('active');
             
-            const _0x1e21 = document.getElementById('searchBtn');
-            _0x1e21.disabled = true;
-            _0x1e21.textContent = 'Поиск...';
+            const btn = document.getElementById('searchBtn');
+            btn.disabled = true;
+            btn.textContent = 'Поиск...';
         }
         
-        function _0x1e21(_0x5e21) {
-            const _0x3e21 = document.getElementById('results');
-            const _0x4e21 = document.getElementById('searchBtn');
+        // Показать результаты
+        function displayResults(data) {
+            const results = document.getElementById('results');
+            const btn = document.getElementById('searchBtn');
             
-            _0x4e21.disabled = false;
-            _0x4e21.textContent = 'Найти информацию';
+            btn.disabled = false;
+            btn.textContent = 'Найти информацию';
             
-            if (!_0x5e21) {
-                _0x3e21.innerHTML = '<div class="error">Не удалось получить данные от API</div>';
+            if (!data || !data.results || data.results.length === 0) {
+                results.innerHTML = '<div class="error">Информация по данному номеру не найдена</div>';
                 return;
             }
             
-            let _0x2d8a = _0x2c21(_0x5e21);
-            _0x3e21.innerHTML = _0x2d8a;
+            let html = createResultsHTML(data);
+            results.innerHTML = html;
         }
 
-        // Красивое форматирование данных из API
-        function _0x2c21(_0x1f3c) {
-            if (!_0x1f3c.results || _0x1f3c.results.length === 0) {
-                return '<div class="error">Информация по данному номеру не найдена</div>';
-            }
-            
-            let _0x3e21 = '';
-            
-            // Статистика поиска
-            _0x3e21 += `
+        // Создание HTML для результатов
+        function createResultsHTML(data) {
+            let html = `
                 <div class="result-item">
                     <div class="result-title">📊 Статистика поиска</div>
                     <div class="stats">
                         <div class="stat-item">
-                            <div class="stat-value">${_0x1f3c.results.length}</div>
+                            <div class="stat-value">${data.results.length}</div>
                             <div class="stat-label">найдено записей</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-value">${_0x1f3c.search_time_seconds || '0.00'}s</div>
+                            <div class="stat-value">${data.search_time_seconds || '0.00'}s</div>
                             <div class="stat-label">время поиска</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value">${_0x4c21(_0x1f3c.results)}</div>
-                            <div class="stat-label">актуальность данных</div>
                         </div>
                     </div>
                 </div>
             `;
             
-            const _0x4e21 = _0x3c21(_0x1f3c.results);
-            
-            Object.keys(_0x4e21).forEach(_0x2d8a => {
-                const _0x5e21 = _0x4e21[_0x2d8a];
-                _0x3e21 += _0x1c21(_0x2d8a, _0x5e21);
+            data.results.forEach((result, index) => {
+                html += createResultItemHTML(result, index);
             });
             
-            return _0x3e21;
+            return html;
         }
 
-        // Группировка результатов по источникам данных
-        function _0x3c21(_0x2e21) {
-            const _0x1e21 = {};
-            
-            _0x2e21.forEach(_0x5e21 => {
-                const _0x3e21 = _0x5e21.data || 'Неизвестный источник';
-                if (!_0x1e21[_0x3e21]) {
-                    _0x1e21[_0x3e21] = [];
-                }
-                _0x1e21[_0x3e21].push(_0x5e21);
-            });
-            
-            return _0x1e21;
-        }
-
-        // Форматирование группы результатов
-        function _0x1c21(_0x4e21, _0x2d8a) {
-            let _0x1f3c = '';
-            const _0x3e21 = _0x5c21(_0x4e21);
-            
-            _0x1f3c += `
+        // Создание HTML для элемента результата
+        function createResultItemHTML(result, index) {
+            return `
                 <div class="result-item">
                     <div class="result-title">
-                        ${_0x6c21(_0x4e21)} ${_0x3e21}
-                        <span class="badge source-badge">${_0x2d8a.length} записей</span>
+                        📄 Результат ${index + 1}
+                        ${result.data ? `<span class="badge source-badge">${getSourceName(result.data)}</span>` : ''}
                     </div>
                     <div class="result-grid">
+                        ${createInfoCardsHTML(result)}
+                    </div>
+                </div>
             `;
-            
-            const _0x2e21 = _0x2d8a[0];
-            _0x1f3c += _0x7c21(_0x2e21);
-            
-            if (_0x2d8a.length > 1) {
-                _0x1f3c += `
-                    <div class="info-card" style="grid-column: 1 / -1;">
-                        <div class="info-label">📋 Дополнительные записи</div>
-                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                `;
-                _0x2d8a.slice(1).forEach((_0x1e21, _0x5e21) => {
-                    _0x1f3c += `<span class="badge">Запись ${_0x5e21 + 2}</span>`;
-                });
-                _0x1f3c += `</div></div>`;
-            }
-            
-            _0x1f3c += `</div></div>`;
-            
-            return _0x1f3c;
         }
 
-        // Форматирование основной информации
-        function _0x7c21(_0x3e21) {
-            let _0x4e21 = '';
+        // Создание информационных карточек
+        function createInfoCardsHTML(result) {
+            let html = '';
+            const fields = [
+                { key: ['fio', 'full_name', 'name', 'pib'], label: '👤 ФИО', process: (val) => val },
+                { key: ['phone'], label: '📞 Телефон', process: formatPhone },
+                { key: ['email'], label: '📧 Email', process: (val) => val },
+                { key: ['birthdate', 'birth_date'], label: '🎂 Дата рождения', process: formatDate },
+                { key: ['address', 'address_reg'], label: '🏠 Адрес', process: (val) => val },
+                { key: ['inn'], label: '💳 ИНН', process: (val) => val },
+                { key: ['work_place'], label: '💼 Место работы', process: (val) => val }
+            ];
             
-            const _0x2d8a = _0x3e21.fio || _0x3e21.full_name || _0x3e21.fullname || _0x3e21.name || _0x3e21.pib;
-            if (_0x2d8a && _0x2d8a !== 'null' && _0x2d8a !== '1') {
-                _0x4e21 += `
-                    <div class="info-card">
-                        <div class="info-label">👤 ФИО</div>
-                        <div class="info-value">${_0x2d8a}</div>
-                    </div>
-                `;
-            }
-            
-            if (_0x3e21.phone) {
-                _0x4e21 += `
-                    <div class="info-card">
-                        <div class="info-label">📞 Телефон</div>
-                        <div class="info-value">${_0x8c21(_0x3e21.phone)}</div>
-                    </div>
-                `;
-            }
-            
-            const _0x1f3c = [];
-            for (let _0x2e21 = 1; _0x2e21 <= 5; _0x2e21++) {
-                const _0x1e21 = `phone${_0x2e21}`;
-                if (_0x3e21[_0x1e21] && _0x3e21[_0x1e21] !== _0x3e21.phone) {
-                    _0x1f3c.push(_0x3e21[_0x1e21]);
-                }
-            }
-            if (_0x1f3c.length > 0) {
-                _0x4e21 += `
-                    <div class="info-card">
-                        <div class="info-label">📱 Доп. телефоны</div>
-                        <div class="info-value">${_0x1f3c.map(_0x5e21 => _0x8c21(_0x5e21)).join('<br>')}</div>
-                    </div>
-                `;
-            }
-            
-            if (_0x3e21.email && _0x3e21.email !== 'null') {
-                _0x4e21 += `
-                    <div class="info-card">
-                        <div class="info-label">📧 Email</div>
-                        <div class="info-value">${_0x3e21.email}</div>
-                    </div>
-                `;
-            }
-            
-            const _0x5e21 = _0x3e21.birthdate || _0x3e21.birth_date || _0x3e21.bdate || _0x3e21.birthday;
-            if (_0x5e21 && _0x5e21 !== 'null') {
-                _0x4e21 += `
-                    <div class="info-card">
-                        <div class="info-label">🎂 Дата рождения</div>
-                        <div class="info-value">${_0x9c21(_0x5e21)}</div>
-                    </div>
-                `;
-            }
-            
-            if (_0x3e21.passport_info || (_0x3e21.passport_series && _0x3e21.passport_number)) {
-                const _0x6e21 = _0x3e21.passport_info || 
-                    `Серия ${_0x3e21.passport_series} № ${_0x3e21.passport_number}`;
-                _0x4e21 += `
-                    <div class="info-card">
-                        <div class="info-label">🆔 Паспорт</div>
-                        <div class="info-value">${_0x6e21}</div>
-                    </div>
-                `;
-            }
-            
-            if (_0x3e21.passport_date && _0x3e21.passport_date !== 'null') {
-                _0x4e21 += `
-                    <div class="info-card">
-                        <div class="info-label">📅 Выдан</div>
-                        <div class="info-value">${_0x9c21(_0x3e21.passport_date)}</div>
-                    </div>
-                `;
-            }
-            
-            if (_0x3e21.inn || _0x3e21.INN) {
-                _0x4e21 += `
-                    <div class="info-card">
-                        <div class="info-label">💳 ИНН</div>
-                        <div class="info-value">${_0x3e21.inn || _0x3e21.INN}</div>
-                    </div>
-                `;
-            }
-            
-            if (_0x3e21.snils || _0x3e21.snils_2) {
-                const _0x7e21 = _0x3e21.snils || _0x3e21.snils_2;
-                if (_0x7e21 !== 'null') {
-                    _0x4e21 += `
+            fields.forEach(field => {
+                const value = getFieldValue(result, field.key);
+                if (value && value !== 'null' && value !== '1') {
+                    html += `
                         <div class="info-card">
-                            <div class="info-label">📄 СНИЛС</div>
-                            <div class="info-value">${_0x7e21}</div>
+                            <div class="info-label">${field.label}</div>
+                            <div class="info-value">${field.process(value)}</div>
                         </div>
                     `;
                 }
-            }
+            });
             
-            const _0x8e21 = _0x3e21.address_reg || _0x3e21.registred_address || 
-                              _0x3e21.address || _0x3e21.registred_city;
-            if (_0x8e21 && _0x8e21 !== 'null') {
-                _0x4e21 += `
-                    <div class="info-card">
-                        <div class="info-label">🏠 Адрес регистрации</div>
-                        <div class="info-value">${_0xac21(_0x8e21, _0x3e21)}</div>
-                    </div>
-                `;
-            }
-            
-            const _0x9e21 = _0x3e21.address_actual || _0x3e21.actual_address || 
-                                 _0x3e21.actual_city;
-            if (_0x9e21 && _0x9e21 !== 'null' && _0x9e21 !== _0x8e21) {
-                _0x4e21 += `
-                    <div class="info-card">
-                        <div class="info-label">📍 Адрес проживания</div>
-                        <div class="info-value">${_0xac21(_0x9e21, _0x3e21)}</div>
-                    </div>
-                `;
-            }
-            
-            if (_0x3e21.work_place && _0x3e21.work_place !== 'null') {
-                _0x4e21 += `
-                    <div class="info-card">
-                        <div class="info-label">💼 Место работы</div>
-                        <div class="info-value">${_0x3e21.work_place}</div>
-                    </div>
-                `;
-            }
-            
-            if (_0x3e21.sum || _0x3e21.family_income) {
-                const _0xae21 = _0x3e21.sum || _0x3e21.family_income;
-                _0x4e21 += `
-                    <div class="info-card">
-                        <div class="info-label">💰 Доход</div>
-                        <div class="info-value">${_0xbc21(_0xae21)} руб.</div>
-                    </div>
-                `;
-            }
-            
-            if (_0x3e21.card_number) {
-                _0x4e21 += `
-                    <div class="info-card">
-                        <div class="info-label">💳 Номер карты</div>
-                        <div class="info-value">${_0x3e21.card_number}</div>
-                    </div>
-                `;
-            }
-            
-            if (_0x3e21.tags && _0x3e21.tags !== 'null') {
-                _0x4e21 += `
-                    <div class="info-card">
-                        <div class="info-label">🏷️ Теги</div>
-                        <div class="info-value">${_0x3e21.tags}</div>
-                    </div>
-                `;
-            }
-            
-            if (_0x3e21.status && _0x3e21.status !== 'null' && _0x3e21.status !== 'ready') {
-                _0x4e21 += `
-                    <div class="info-card">
-                        <div class="info-label">🟢 Статус</div>
-                        <div class="info-value">${_0x3e21.status}</div>
-                    </div>
-                `;
-            }
-            
-            if (_0x3e21.reg_date || _0x3e21.record_date || _0x3e21.created_at) {
-                const _0xbe21 = _0x3e21.reg_date || _0x3e21.record_date || _0x3e21.created_at;
-                _0x4e21 += `
-                    <div class="info-card">
-                        <div class="info-label">📅 Дата регистрации</div>
-                        <div class="info-value">${_0x9c21(_0xbe21)}</div>
-                    </div>
-                `;
-            }
-            
-            if (_0x3e21.last_online || _0x3e21.last_update || _0x3e21.updated_at) {
-                const _0xce21 = _0x3e21.last_online || _0x3e21.last_update || _0x3e21.updated_at;
-                _0x4e21 += `
-                    <div class="info-card">
-                        <div class="info-label">🕒 Последняя активность</div>
-                        <div class="info-value">${_0x9c21(_0xce21)}</div>
-                    </div>
-                `;
-            }
-            
-            if (_0x3e21.user_id || _0x3e21.system_id || _0x3e21.fcid) {
-                const _0xde21 = _0x3e21.user_id || _0x3e21.system_id || _0x3e21.fcid;
-                _0x4e21 += `
-                    <div class="info-card">
-                        <div class="info-label">🆔 ID пользователя</div>
-                        <div class="info-value">${_0xde21}</div>
-                    </div>
-                `;
-            }
-            
-            return _0x4e21;
+            return html;
         }
 
-        // Вспомогательные функции форматирования
-        function _0x8c21(_0x2e21) {
-            const _0x1e21 = _0x2e21.replace(/\D/g, '');
-            if (_0x1e21.length === 11) {
-                return _0x1e21.replace(/(\d{1})(\d{3})(\d{3})(\d{2})(\d{2})/, '+$1 ($2) $3-$4-$5');
+        // Получить значение поля из результата
+        function getFieldValue(result, keys) {
+            for (let key of keys) {
+                if (result[key] && result[key] !== 'null') {
+                    return result[key];
+                }
             }
-            return _0x2e21;
+            return null;
         }
 
-        function _0x9c21(_0x3e21) {
+        // Форматирование телефона
+        function formatPhone(phone) {
+            const clean = phone.replace(/\D/g, '');
+            if (clean.length === 11) {
+                return clean.replace(/(\d{1})(\d{3})(\d{3})(\d{2})(\d{2})/, '+$1 ($2) $3-$4-$5');
+            }
+            return phone;
+        }
+
+        // Форматирование даты
+        function formatDate(dateStr) {
             try {
-                const _0x4e21 = _0x3e21.replace(/^b'|'$/g, '');
-                const _0x2d8a = new Date(_0x4e21);
-                if (isNaN(_0x2d8a.getTime())) {
-                    const _0x1f3c = _0x4e21.split('.');
-                    if (_0x1f3c.length === 3) {
-                        const _0x5e21 = parseInt(_0x1f3c[0]);
-                        const _0x6e21 = parseInt(_0x1f3c[1]) - 1;
-                        const _0x7e21 = parseInt(_0x1f3c[2]);
-                        const _0x8e21 = new Date(_0x7e21, _0x6e21, _0x5e21);
-                        if (!isNaN(_0x8e21.getTime())) {
-                            return _0x8e21.toLocaleDateString('ru-RU', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                            });
-                        }
-                    }
-                    return _0x4e21;
+                const clean = dateStr.replace(/^b'|'$/g, '');
+                const date = new Date(clean);
+                if (!isNaN(date.getTime())) {
+                    return date.toLocaleDateString('ru-RU');
                 }
-                return _0x2d8a.toLocaleDateString('ru-RU', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-            } catch (_0x9e21) {
-                return _0x3e21;
+                return clean;
+            } catch {
+                return dateStr;
             }
         }
 
-        function _0xac21(_0x4e21, _0x2d8a) {
-            let _0x1f3c = _0x4e21;
-            
-            if (_0x2d8a.registred_city && _0x2d8a.registred_street && _0x2d8a.registred_house) {
-                _0x1f3c = `${_0x2d8a.registred_city}, ${_0x2d8a.registred_street}, д. ${_0x2d8a.registred_house}`;
-                if (_0x2d8a.registred_flat) {
-                    _0x1f3c += `, кв. ${_0x2d8a.registred_flat}`;
-                }
-            }
-            
-            return _0x1f3c.replace(/^b'|'$/g, '');
-        }
-
-        function _0xbc21(_0x3e21) {
-            return parseInt(_0x3e21).toLocaleString('ru-RU');
-        }
-
-        function _0x5c21(_0x4e21) {
-            const _0x2d8a = {
-                'numbuster_2018_2019': 'Numbuster 2018-2019',
-                'getcontact_2021': 'GetContact 2021',
-                'dengisrazy_ru2024': 'ДеньгиСразу 2024',
-                'dns_shop2022': 'DNS Shop 2022',
-                'himera_2023': 'Химера 2023',
-                'oneclickmoney_ru_2024': 'OneClickMoney 2024',
-                'qzaem': 'Qzaem',
-                'russian_tax_2022': 'Налоговая РФ 2022',
-                'whatsapp_russia': 'WhatsApp Россия',
-                'facebook_russia': 'Facebook Россия',
-                'nalogrf2023': 'Налог РФ 2023',
-                'zaymer_ru': 'Zaymer.ru'
+        // Получить название источника
+        function getSourceName(source) {
+            const sources = {
+                'numbuster_2018_2019': 'Numbuster',
+                'getcontact_2021': 'GetContact',
+                'dengisrazy_ru2024': 'ДеньгиСразу',
+                'dns_shop2022': 'DNS Shop',
+                'himera_2023': 'Химера'
             };
-            return _0x2d8a[_0x4e21] || _0x4e21;
+            return sources[source] || source;
         }
 
-        function _0x6c21(_0x2d8a) {
-            const _0x1f3c = {
-                'numbuster_2018_2019': '📱',
-                'getcontact_2021': '👥',
-                'dengisrazy_ru2024': '💰',
-                'dns_shop2022': '🛒',
-                'himera_2023': '🔍',
-                'oneclickmoney_ru_2024': '💸',
-                'qzaem': '🏦',
-                'russian_tax_2022': '🏛️',
-                'whatsapp_russia': '💬',
-                'facebook_russia': '📘',
-                'nalogrf2023': '📊',
-                'zaymer_ru': '💳'
-            };
-            return _0x1f3c[_0x2d8a] || '📄';
-        }
-
-        function _0x4c21(_0x3e21) {
-            const _0x4e21 = _0x3e21.map(_0x2d8a => {
-                const _0x1f3c = _0x2d8a.reg_date || _0x2d8a.record_date || _0x2d8a.created_at;
-                if (_0x1f3c) {
-                    const _0x5e21 = new Date(_0x1f3c).getFullYear();
-                    return isNaN(_0x5e21) ? null : _0x5e21;
-                }
-                return null;
-            }).filter(_0x6e21 => _0x6e21 !== null);
+        // Показать ошибку
+        function showError(message) {
+            const results = document.getElementById('results');
+            results.innerHTML = `<div class="error">${message}</div>`;
+            results.classList.add('active');
             
-            return _0x4e21.length > 0 ? Math.max(..._0x4e21) : new Date().getFullYear();
+            const btn = document.getElementById('searchBtn');
+            btn.disabled = false;
+            btn.textContent = 'Найти информацию';
         }
         
-        function _0x5d21(_0x3e21) {
-            const _0x4e21 = document.getElementById('results');
-            _0x4e21.innerHTML = `<div class="error">${_0x3e21}</div>`;
-            _0x4e21.classList.add('active');
-            
-            const _0x2d8a = document.getElementById('searchBtn');
-            _0x2d8a.disabled = false;
-            _0x2d8a.textContent = 'Найти информацию';
-        }
-        
-        // Инициализация
+        // Инициализация при загрузке
         document.addEventListener('DOMContentLoaded', function() {
-            _0x4a7d();
-            _0x3b8d();
-            _0x2a7d();
-            _0x1b8d();
+            createSnowflakes();
+            createParticles();
+            initTabs();
+            initSearch();
         });
     </script>
 </body>
